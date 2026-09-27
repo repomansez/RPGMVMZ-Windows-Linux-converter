@@ -14,7 +14,7 @@ def get_nwjs(version):
     if os.path.exists(nwjs_tarball):
         print("NWJS already downloaded")
         print("Extracting nwjs")
-        shutil.rmtree("nwjs-extracted")
+        #shutil.rmtree("nwjs-extracted")
         extract_nwjs(nwjs_tarball)
     else:
         request = urllib.request.Request( # NWJS doesnt like python scripts downloading their shit so lets trick them into thinking we're firefox hehehehehe
@@ -30,7 +30,20 @@ def get_nwjs(version):
         extract_nwjs(nwjs_tarball)
 
 def extract_nwjs(nwjs_tarball):
+    extract_dir = "nwjs-extracted"
     print("Fulldir: " + nwjs_tarball)
-    file = tarfile.open(nwjs_tarball)  # noqa: SIM115
-    file.extractall('nwjs-extracted')
-    file.close()
+    with tarfile.open(nwjs_tarball) as file:
+        def strip_top_directory(member, path):
+            parts = pathlib.Path(member.name).parts
+
+            if len(parts) <= 1:
+                return None
+
+            member.name = str(pathlib.Path(*parts[1:]))
+            return member
+
+        file.extractall(
+            "nwjs-extracted",
+            filter=strip_top_directory
+        )
+        file.close()
