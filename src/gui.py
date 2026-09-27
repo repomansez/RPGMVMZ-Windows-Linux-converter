@@ -9,6 +9,10 @@ class MyWidget(QtWidgets.QWidget):
         super().__init__()
 
         self.selected_directory = None
+        self.selected_directory = None
+        self.output_directory = None
+        self.output_directory = None
+        
 
         self.setWindowTitle("RPG Maker Converter")
         self.resize(700, 400)
@@ -54,6 +58,49 @@ class MyWidget(QtWidgets.QWidget):
         # Spacer
         main_layout.addStretch()
 
+        # Output Directory selector
+       # title = QtWidgets.QLabel("RPG Maker Converter")
+       # title.setObjectName("title")
+
+        subtitle = QtWidgets.QLabel(
+            "Select an RPG Maker game directory to begin."
+        )
+        subtitle.setObjectName("subtitle")
+
+        main_layout.addWidget(title)
+        main_layout.addWidget(subtitle)
+        subtitle = QtWidgets.QLabel(
+             "Select an Output."
+         )
+        subtitle.setObjectName("subtitle")
+
+        main_layout.addWidget(title)
+        main_layout.addWidget(subtitle)
+
+         # Directory section
+        output_directory_label = QtWidgets.QLabel("Output Directory")
+        output_directory_label.setObjectName("section_label")
+
+        output_directory_layout = QtWidgets.QHBoxLayout()
+        output_directory_layout.setSpacing(10)
+
+        self.output_directory_edit = QtWidgets.QLineEdit()
+        self.output_directory_edit.setPlaceholderText("Select an output directory...")
+        self.output_directory_edit.setReadOnly(True)
+
+        self.output_browse_button = QtWidgets.QPushButton("Browse")
+        self.output_browse_button.setObjectName("output_browse_button")
+        self.output_browse_button.setFixedWidth(100)
+
+        output_directory_layout.addWidget(self.output_directory_edit)
+        output_directory_layout.addWidget(self.output_browse_button)
+
+        main_layout.addWidget(output_directory_label)
+        main_layout.addLayout(output_directory_layout)
+
+        # # Spacer
+        main_layout.addStretch()
+
         # Convert button
         self.convert_button = QtWidgets.QPushButton("Convert")
         self.convert_button.setObjectName("convert_button")
@@ -63,6 +110,9 @@ class MyWidget(QtWidgets.QWidget):
 
         # Connections
         self.browse_button.clicked.connect(self.select_directory)
+        #self.browse_button.clicked.connect(self.select_directory_output)
+        self.output_browse_button.clicked.connect(self.select_directory_output)
+        
         self.convert_button.clicked.connect(self.convert)
 
         # Styling
@@ -144,23 +194,39 @@ class MyWidget(QtWidgets.QWidget):
         if directory:
             self.selected_directory = directory
             self.directory_edit.setText(directory)
+    @QtCore.Slot()
+    def select_directory_output(self):
+        output_directory = QtWidgets.QFileDialog.getExistingDirectory(
+         self,
+             "Select Output Directory"
+         )
+        if output_directory:
+             self.output_directory = output_directory
+             self.output_directory_edit.setText(output_directory)
 
     @QtCore.Slot()
     def convert(self):
-        if not self.selected_directory:
+        if not self.selected_directory or not self.output_directory:
             QtWidgets.QMessageBox.warning(
                 self,
                 "No Directory",
-                "Please select an RPG Maker game directory first."
+                "Please select both directories first."
             )
             return
 
+
         # Your converter function goes here
-        print("Converting:", self.selected_directory)
+        print("Converting:", self.selected_directory, self.output_directory)
         version = "0.78.0"
-        gamepath = self.selected_directory ####### TO BE SET BY GUI LATER
+        gamepath = self.selected_directory 
+        gameoutput = self.output_directory
         get_nwjs(version)
-        convert(gamepath)
+        convert(gamepath, gameoutput)
+        QtWidgets.QMessageBox.information(
+        self,
+        "Conversion Complete",
+        "The game was successfully converted!"
+    )
 
 
 if __name__ == "__main__":

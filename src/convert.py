@@ -3,8 +3,8 @@ import pathlib
 import constants
 import shutil
 
-def copy_dirs(gamepath):
-    dest_filename = "nwjs-extracted"
+def copy_dirs(gamepath, gameoutput):
+    dest_filename = gameoutput
     if os.path.isdir(dest_filename):
         #shutil.rmtree(dest_filename)
         #os.mkdir(dest_filename)
@@ -24,8 +24,8 @@ def copy_dirs(gamepath):
         print("Copying directory:" + dir)
         shutil.copytree(source, dest)
 
-def copy_files(gamepath):
-    dest_filename = "nwjs-extracted"
+def copy_files(gamepath, gameoutput):
+    dest_filename = gameoutput
     for file in constants.rpgm_files:
         source = os.path.join(gamepath, file)
         dest = os.path.join(dest_filename, file)
@@ -35,7 +35,7 @@ def copy_files(gamepath):
         print("Copying file: ", file)
         shutil.copyfile(source, dest)
 
-def convert(gamepath):
+def convert(gamepath, gameoutput):
     game = gamepath
-    copy_dirs(game)
-    copy_files(game)
+    copy_dirs(game, gameoutput)
+    copy_files(game, gameoutput)
