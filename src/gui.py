@@ -220,7 +220,7 @@ class MyWidget(QtWidgets.QWidget):
         version = "0.78.0"
         gamepath = self.selected_directory 
         gameoutput = self.output_directory
-        get_nwjs(version)
+        get_nwjs(version, gameoutput)
         convert(gamepath, gameoutput)
         QtWidgets.QMessageBox.information(
         self,
