@@ -65,17 +65,6 @@ class MyWidget(QtWidgets.QWidget):
         subtitle = QtWidgets.QLabel(
             "Select an RPG Maker game directory to begin."
         )
-        subtitle.setObjectName("subtitle")
-
-        main_layout.addWidget(title)
-        main_layout.addWidget(subtitle)
-        subtitle = QtWidgets.QLabel(
-             "Select an Output."
-         )
-        subtitle.setObjectName("subtitle")
-
-        main_layout.addWidget(title)
-        main_layout.addWidget(subtitle)
 
          # Directory section
         output_directory_label = QtWidgets.QLabel("Output Directory")
