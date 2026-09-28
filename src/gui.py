@@ -3,6 +3,7 @@ from getnwjs import get_nwjs
 from convert import convert
 from PySide6 import QtCore, QtWidgets
 from prechecks import check
+from pathlib import Path
 
 
 class MyWidget(QtWidgets.QWidget):
@@ -10,8 +11,6 @@ class MyWidget(QtWidgets.QWidget):
         super().__init__()
 
         self.selected_directory = None
-        self.selected_directory = None
-        self.output_directory = None
         self.output_directory = None
         self.checks = None
 
@@ -29,9 +28,7 @@ class MyWidget(QtWidgets.QWidget):
         title = QtWidgets.QLabel("RPG Maker Converter")
         title.setObjectName("title")
 
-        subtitle = QtWidgets.QLabel(
-            "Select an RPG Maker game directory to begin."
-        )
+        subtitle = QtWidgets.QLabel("Select an RPG Maker game directory to begin.")
         subtitle.setObjectName("subtitle")
 
         main_layout.addWidget(title)
@@ -43,34 +40,34 @@ class MyWidget(QtWidgets.QWidget):
         view.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         view.setUniformItemSizes(True)
         self.nwjs_version.setView(view)
-        
-        self.nwjs_version.addItems([
-            # Older / RPG Maker compatibility
-            "0.29.4",
-            "0.44.5",
-            "0.48.4",
-            "0.59.1",
-            "0.67.1",
-            "0.69.1",
-            "0.78.0",
-        
-            # Modern
-            "0.93.0",
-            "0.94.0",
-            "0.110.1",
-            "0.111.3",
-            "0.112.0",
-            "0.113.0",
-            "0.114.2",
-            "0.115.0",
-            "0.116.0",
-            "0.117.0",
-        ])
-        
+
+        self.nwjs_version.addItems(
+            [
+                # Older / RPG Maker compatibility
+                "0.29.4",
+                "0.44.5",
+                "0.48.4",
+                "0.59.1",
+                "0.67.1",
+                "0.69.1",
+                "0.78.0",
+                # Modern
+                "0.93.0",
+                "0.94.0",
+                "0.110.1",
+                "0.111.3",
+                "0.112.0",
+                "0.113.0",
+                "0.114.2",
+                "0.115.0",
+                "0.116.0",
+                "0.117.0",
+            ]
+        )
+
         self.nwjs_version.setCurrentText("0.78.0")
         self.nwjs_version.setMaxVisibleItems(8)
-        
-        
+
         main_layout.addWidget(nwjs_label)
         main_layout.addWidget(self.nwjs_version)
         # Directory section
@@ -98,14 +95,12 @@ class MyWidget(QtWidgets.QWidget):
         main_layout.addStretch()
 
         # Output Directory selector
-       # title = QtWidgets.QLabel("RPG Maker Converter")
-       # title.setObjectName("title")
+        # title = QtWidgets.QLabel("RPG Maker Converter")
+        # title.setObjectName("title")
 
-        subtitle = QtWidgets.QLabel(
-            "Select an RPG Maker game directory to begin."
-        )
+        subtitle = QtWidgets.QLabel("Select an RPG Maker game directory to begin.")
 
-         # Directory section
+        # Directory section
         output_directory_label = QtWidgets.QLabel("Output Directory")
         output_directory_label.setObjectName("section_label")
 
@@ -138,175 +133,95 @@ class MyWidget(QtWidgets.QWidget):
 
         # Connections
         self.browse_button.clicked.connect(self.select_directory)
-        #self.browse_button.clicked.connect(self.select_directory_output)
+        # self.browse_button.clicked.connect(self.select_directory_output)
         self.output_browse_button.clicked.connect(self.select_directory_output)
-        
+
         self.convert_button.clicked.connect(self.convert)
-
-        # Styling
-        self.setStyleSheet("""
-            QWidget {
-                background-color: #111111;
-                color: #dddddd;
-                font-size: 14px;
-            }
-
-            QLabel#title {
-                font-size: 28px;
-                font-weight: bold;
-                color: #ffffff;
-            }
-
-            QLabel#subtitle {
-                color: #888888;
-                font-size: 14px;
-            }
-
-            QLabel#section_label {
-                color: #aaaaaa;
-                font-size: 13px;
-            }
-
-            QLineEdit {
-                background-color: #1b1b1b;
-                border: 1px solid #333333;
-                border-radius: 6px;
-                padding: 10px;
-                color: #dddddd;
-            }
-
-            QLineEdit:focus {
-                border: 1px solid #666666;
-            }
-
-            QPushButton {
-                background-color: #222222;
-                border: 1px solid #444444;
-                border-radius: 6px;
-                padding: 10px 16px;
-                color: #dddddd;
-            }
-
-            QPushButton:hover {
-                background-color: #2c2c2c;
-            }
-
-            QPushButton:pressed {
-                background-color: #181818;
-            }
-
-            QPushButton#convert_button {
-                background-color: #dddddd;
-                color: #111111;
-                border: none;
-                font-size: 16px;
-                font-weight: bold;
-            }
-
-            QPushButton#convert_button:hover {
-                background-color: #ffffff;
-            }
-
-            QPushButton#convert_button:pressed {
-                background-color: #aaaaaa;
-            }
-        """)
 
     @QtCore.Slot()
     def select_directory(self):
         directory = QtWidgets.QFileDialog.getExistingDirectory(
-            self,
-            "Select RPG Maker Game Directory"
+            self, "Select RPG Maker Game Directory"
         )
 
         if directory:
             self.selected_directory = directory
             self.directory_edit.setText(directory)
+
     @QtCore.Slot()
     def select_directory_output(self):
         output_directory = QtWidgets.QFileDialog.getExistingDirectory(
-         self,
-             "Select Output Directory"
-         )
+            self, "Select Output Directory"
+        )
         if output_directory:
-             self.output_directory = output_directory
-             self.output_directory_edit.setText(output_directory)
+            self.output_directory = output_directory
+            self.output_directory_edit.setText(output_directory)
 
     @QtCore.Slot()
     def convert(self):
         if not self.selected_directory:
             QtWidgets.QMessageBox.warning(
-                self,
-                "No Directory",
-                "Please select the game directory."
+                self, "No Directory", "Please select the game directory."
             )
             return
         elif not self.output_directory:
             QtWidgets.QMessageBox.warning(
-                self,
-                "No Directory",
-                "Please select an output directory."
-            )            
+                self, "No Directory", "Please select an output directory."
+            )
             return
 
-        # Your converter function goes here
         print("Converting:", self.selected_directory, self.output_directory)
         version = self.nwjs_version.currentText()
-        gamepath = self.selected_directory 
+        gamepath = self.selected_directory
         gameoutput = self.output_directory
         version_status, dir_status = check(gamepath, gameoutput)
         if version_status == "not":
-           QtWidgets.QMessageBox.information(
-            self,
-            "RPGM not detected",
-            "No RPGM game detected in input."
-           )
-           return
+            QtWidgets.QMessageBox.information(
+                self, "RPGM not detected", "No RPGM game detected in input."
+            )
+            return
         elif dir_status == "notempty":
             QtWidgets.QMessageBox.information(
                 self,
                 "Output directory not empty",
-                "The output directory should be empty."
+                "The output directory should be empty.",
             )
             return
         elif dir_status == "same":
             QtWidgets.QMessageBox.information(
-            self,
-            "Same directory",
-            "Input and output directories cannot be the same."
+                self,
+                "Same directory",
+                "Input and output directories cannot be the same.",
             )
             return
         elif version_status == "mv":
             QtWidgets.QMessageBox.information(
-            self,
-            "RPGMV",
-            "RPGMV detected, will start conversion"
-           )
+                self, "RPGMV", "RPGMV detected, will start conversion"
+            )
         elif version_status == "mz":
             QtWidgets.QMessageBox.information(
-            self,
-            "RPGMZ",
-            "RPGMZ detected, will start conversion"
-           )           
-        
+                self, "RPGMZ", "RPGMZ detected, will start conversion"
+            )
+
         self.worker = ConvertWorker(gamepath, gameoutput, version)
         self.worker.finished.connect(self.conversion_finished)
         self.worker.start()
-        
+
     def conversion_finished(self):
         QtWidgets.QMessageBox.information(
-            self,
-            "Conversion Complete",
-            "The game was successfully converted!"
-            )
-            
+            self, "Conversion Complete", "The game was successfully converted!"
+        )
+
+
 class ConvertWorker(QtCore.QThread):
     finished = QtCore.Signal()
+
     def __init__(self, gamepath, gameoutput, version):
         super().__init__()
         self.gamepath = gamepath
         self.gameoutput = gameoutput
         self.version = version
+
     def run(self):
         get_nwjs(self.version, self.gameoutput)
         convert(self.gamepath, self.gameoutput)
@@ -315,7 +230,7 @@ class ConvertWorker(QtCore.QThread):
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
-
+        
     widget = MyWidget()
     widget.show()
 

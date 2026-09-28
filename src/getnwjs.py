@@ -1,8 +1,8 @@
-import pathlib
+from pathlib import Path
 import os
 import tarfile
 import urllib.request
-import shutil
+
 
 ############ TODO: a lot
 def get_nwjs(version, gameoutput):
@@ -14,14 +14,12 @@ def get_nwjs(version, gameoutput):
     if os.path.exists(nwjs_tarball):
         print("NWJS already downloaded")
         print("Extracting nwjs")
-        #shutil.rmtree("nwjs-extracted")
         extract_nwjs(nwjs_tarball, gameoutput)
     else:
-        request = urllib.request.Request( # NWJS doesnt like python scripts downloading their shit so lets trick them into thinking we're firefox hehehehehe
-            download_link,
-            headers={"User-Agent": "Mozilla/5.0"}
+        request = urllib.request.Request(  # NWJS doesnt like python scripts downloading their shit so lets trick them into thinking we're firefox hehehehehe
+            download_link, headers={"User-Agent": "Mozilla/5.0"}
         )
-    
+
         print("Downloading nwjs")
         with urllib.request.urlopen(request) as response:
             with open(nwjs_tarball, "wb") as file:
@@ -29,21 +27,20 @@ def get_nwjs(version, gameoutput):
         print("Extracting nwjs")
         extract_nwjs(nwjs_tarball, gameoutput)
 
+
 def extract_nwjs(nwjs_tarball, gameoutput):
     extract_dir = gameoutput
     print("Fulldir: " + nwjs_tarball)
     with tarfile.open(nwjs_tarball) as file:
+
         def strip_top_directory(member, path):
-            parts = pathlib.Path(member.name).parts
+            parts = Path(member.name).parts
 
             if len(parts) <= 1:
                 return None
 
-            member.name = str(pathlib.Path(*parts[1:]))
+            member.name = str(Path(*parts[1:]))
             return member
 
-        file.extractall(
-            extract_dir,
-            filter=strip_top_directory
-        )
+        file.extractall(extract_dir, filter=strip_top_directory)
         file.close()

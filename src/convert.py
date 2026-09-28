@@ -1,28 +1,30 @@
 import os
-import pathlib
+from shutil import copyfile, copytree
+
 import constants
-import shutil
+
 
 def copy_dirs(gamepath, gameoutput):
     dest_filename = gameoutput
     if os.path.isdir(dest_filename):
-        #shutil.rmtree(dest_filename)
-        #os.mkdir(dest_filename)
+        # shutil.rmtree(dest_filename)
+        # os.mkdir(dest_filename)
         print("NWJS found")
     else:
         os.mkdir(dest_filename)
     print("path: " + gamepath)
-    
+
     for dir in constants.rpgm_dirs:
         source = os.path.join(gamepath, dir)
         dest = os.path.join(dest_filename, dir)
         if not os.path.isdir(source):
             print(dest, source)
             print("Skipping missing directory:", dir)
-            #time.sleep(1)
+            # time.sleep(1)
             continue
         print("Copying directory:" + dir)
-        shutil.copytree(source, dest)
+        copytree(source, dest)
+
 
 def copy_files(gamepath, gameoutput):
     dest_filename = gameoutput
@@ -33,7 +35,8 @@ def copy_files(gamepath, gameoutput):
             print("Missing file: ", source)
             continue
         print("Copying file: ", file)
-        shutil.copyfile(source, dest)
+        copyfile(source, dest)
+
 
 def convert(gamepath, gameoutput):
     game = gamepath

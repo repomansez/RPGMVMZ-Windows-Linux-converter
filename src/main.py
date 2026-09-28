@@ -1,24 +1,14 @@
-#import os
-#from getnwjs import get_nwjs
-#from convert import convert
-
-#def main():
-#    version = "0.78.0"
-#    gamepath = "oe" ####### TO BE SET BY GUI LATER
-#    get_nwjs(version)
-#    convert(gamepath)
-
-#if __name__ == "__main__":
-#    main()
-
 import sys
 from PySide6 import QtWidgets
 from gui import MyWidget
+from pathlib import Path
 
 
 def main():
     app = QtWidgets.QApplication(sys.argv)
-
+    style_path = Path(__file__).parent / "style.qss"
+    with open(style_path, "r") as f:
+        app.setStyleSheet(f.read())
     widget = MyWidget()
     widget.show()
 

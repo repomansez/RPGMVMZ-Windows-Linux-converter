@@ -1,0 +1,66 @@
+
+QWidget {
+    background-color: #111111;
+    color: #dddddd;
+    font-size: 14px;
+}
+
+            QLabel#title {
+                font-size: 28px;
+                font-weight: bold;
+                color: #ffffff;
+            }
+
+            QLabel#subtitle {
+                color: #888888;
+                font-size: 14px;
+            }
+
+            QLabel#section_label {
+                color: #aaaaaa;
+                font-size: 13px;
+            }
+
+            QLineEdit {
+                background-color: #1b1b1b;
+                border: 1px solid #333333;
+                border-radius: 6px;
+                padding: 10px;
+                color: #dddddd;
+            }
+
+            QLineEdit:focus {
+                border: 1px solid #666666;
+            }
+
+            QPushButton {
+                background-color: #222222;
+                border: 1px solid #444444;
+                border-radius: 6px;
+                padding: 10px 16px;
+                color: #dddddd;
+            }
+
+            QPushButton:hover {
+                background-color: #2c2c2c;
+            }
+
+            QPushButton:pressed {
+                background-color: #181818;
+            }
+
+            QPushButton#convert_button {
+                background-color: #dddddd;
+                color: #111111;
+                border: none;
+                font-size: 16px;
+                font-weight: bold;
+            }
+
+            QPushButton#convert_button:hover {
+                background-color: #ffffff;
+            }
+
+            QPushButton#convert_button:pressed {
+                background-color: #aaaaaa;
+            }
