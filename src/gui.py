@@ -2,7 +2,7 @@ import sys
 from getnwjs import get_nwjs
 from convert import convert
 from PySide6 import QtCore, QtWidgets
-#from prechecks import check
+from prechecks import check
 
 
 class MyWidget(QtWidgets.QWidget):
@@ -13,7 +13,7 @@ class MyWidget(QtWidgets.QWidget):
         self.selected_directory = None
         self.output_directory = None
         self.output_directory = None
-        
+        self.checks = None
 
         self.setWindowTitle("RPG Maker Converter")
         self.resize(700, 400)
@@ -249,20 +249,70 @@ class MyWidget(QtWidgets.QWidget):
             )            
             return
 
-
         # Your converter function goes here
         print("Converting:", self.selected_directory, self.output_directory)
         version = self.nwjs_version.currentText()
         gamepath = self.selected_directory 
         gameoutput = self.output_directory
-        check()
-        get_nwjs(version, gameoutput)
-        convert(gamepath, gameoutput)
+        checks = check(gamepath, gameoutput)
+        if checks == "not":
+           QtWidgets.QMessageBox.information(
+            self,
+            "RPGM not detected",
+            "No RPGM game detected in input."
+           )
+           return
+        elif checks == "mv":
+            QtWidgets.QMessageBox.information(
+            self,
+            "RPGMZ",
+            "RPGMZ detected"
+           )
+            return
+        elif checks == "mz":
+            QtWidgets.QMessageBox.information(
+            self,
+            "RPGMZ",
+            "RPGMV detected"
+           )
+            return
+        elif checks == "notempty":
+            QtWidgets.QMessageBox.information(
+                self,
+                "Output directory not empty",
+                "The output directory should be empty."
+            )
+            return
+        elif checks == "same":
+            QtWidgets.QMessageBox.information(
+                self,
+                "Same directory",
+                "Input and output directories cannot be the same."
+            )
+            return
+        self.worker = ConvertWorker(gamepath, gameoutput, version)
+        self.worker.finished.connect(self.conversion_finished)
+        self.worker.start()
+        
+    def conversion_finished(self):
         QtWidgets.QMessageBox.information(
-        self,
-        "Conversion Complete",
-        "The game was successfully converted!"
-    )
+            self,
+            "Conversion Complete",
+            "The game was successfully converted!"
+            )
+            
+class ConvertWorker(QtCore.QThread):
+    finished = QtCore.Signal()
+    def __init__(self, gamepath, gameoutput, version):
+        super().__init__()
+        self.gamepath = gamepath
+        self.gameoutput = gameoutput
+        self.version = version
+
+    def run(self):
+        get_nwjs(self.version, self.gameoutput)
+        convert(self.gamepath, self.gameoutput)
+        self.finished.emit()
 
 
 if __name__ == "__main__":
