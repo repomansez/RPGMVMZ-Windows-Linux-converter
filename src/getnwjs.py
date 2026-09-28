@@ -3,8 +3,6 @@ import os
 import tarfile
 import urllib.request
 
-
-############ TODO: a lot
 def get_nwjs(version, gameoutput):
     nwjs_fulldir = f"nwjs-sdk-v{version}-linux-x64"
     nwjs_tarball = f"{nwjs_fulldir}.tar.gz"
@@ -26,7 +24,9 @@ def get_nwjs(version, gameoutput):
         print("Extracting nwjs")
         extract_nwjs(nwjs_tarball, gameoutput)
 
-
+def cleanup(nwjs_tarball):
+    os.remove(nwjs_tarball)
+    
 def extract_nwjs(nwjs_tarball, gameoutput):
     extract_dir = gameoutput
     print("Fulldir: " + nwjs_tarball)
@@ -43,3 +43,4 @@ def extract_nwjs(nwjs_tarball, gameoutput):
 
         file.extractall(extract_dir, filter=strip_top_directory)
         file.close()
+    cleanup(nwjs_tarball)

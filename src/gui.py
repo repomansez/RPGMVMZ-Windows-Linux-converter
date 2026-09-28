@@ -1,9 +1,11 @@
 import sys
-from getnwjs import get_nwjs
-from convert import convert
-from PySide6 import QtCore, QtWidgets
-from prechecks import check
 from pathlib import Path
+
+from PySide6 import QtCore, QtWidgets
+
+from convert import convert
+from getnwjs import get_nwjs
+from prechecks import check
 
 
 class MyWidget(QtWidgets.QWidget):
@@ -93,10 +95,6 @@ class MyWidget(QtWidgets.QWidget):
 
         # Spacer
         main_layout.addStretch()
-
-        # Output Directory selector
-        # title = QtWidgets.QLabel("RPG Maker Converter")
-        # title.setObjectName("title")
 
         subtitle = QtWidgets.QLabel("Select an RPG Maker game directory to begin.")
 
@@ -230,7 +228,7 @@ class ConvertWorker(QtCore.QThread):
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
-        
+
     widget = MyWidget()
     widget.show()
 

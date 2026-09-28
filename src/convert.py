@@ -1,4 +1,5 @@
 import os
+import urllib
 from shutil import copyfile, copytree
 
 import constants
@@ -25,7 +26,21 @@ def copy_dirs(gamepath, gameoutput):
         print("Copying directory:" + dir)
         copytree(source, dest)
 
+def get_scripts(gameoutput):
+    print("hi")
+    for url in constants.script_links:
+        filename = os.path.basename(url)
+        output_path = os.path.join(gameoutput, filename)
+        print("Downloading script: ", filename)
+        request = urllib.request.Request(  # NWJS doesnt like python scripts downloading their shit so lets trick them into thinking we're firefox hehehehehe
+            url, headers={"User-Agent": "Mozilla/5.0"}
+            )
 
+        with urllib.request.urlopen(request) as response, open(output_path, "wb") as file:
+            file.write(response.read())
+            #copyfile(script, gameoutput)
+    
+    
 def copy_files(gamepath, gameoutput):
     dest_filename = gameoutput
     for file in constants.rpgm_files:
@@ -42,3 +57,4 @@ def convert(gamepath, gameoutput):
     game = gamepath
     copy_dirs(game, gameoutput)
     copy_files(game, gameoutput)
+    get_scripts(gameoutput)
