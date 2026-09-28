@@ -22,11 +22,9 @@ def check_dirs(gamepath, gameoutput):
     if gamepath == gameoutput:
         return "same"
     if output_empty != 0:
-        print("EMPTY: " + output_empty)
         return "notempty"
 def check(gamepath, gameoutput):
-    #status = check_rpgm_version(gamepath)
-    #return status
-    status = check_dirs(gamepath, gameoutput)
-    return status
+    version_status = check_rpgm_version(gamepath)
+    dir_status = check_dirs(gamepath, gameoutput)
+    return version_status, dir_status
     

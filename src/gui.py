@@ -254,42 +254,41 @@ class MyWidget(QtWidgets.QWidget):
         version = self.nwjs_version.currentText()
         gamepath = self.selected_directory 
         gameoutput = self.output_directory
-        checks = check(gamepath, gameoutput)
-        if checks == "not":
+        version_status, dir_status = check(gamepath, gameoutput)
+        if version_status == "not":
            QtWidgets.QMessageBox.information(
             self,
             "RPGM not detected",
             "No RPGM game detected in input."
            )
            return
-        elif checks == "mv":
-            QtWidgets.QMessageBox.information(
-            self,
-            "RPGMZ",
-            "RPGMZ detected"
-           )
-            return
-        elif checks == "mz":
-            QtWidgets.QMessageBox.information(
-            self,
-            "RPGMZ",
-            "RPGMV detected"
-           )
-            return
-        elif checks == "notempty":
+        elif dir_status == "notempty":
             QtWidgets.QMessageBox.information(
                 self,
                 "Output directory not empty",
                 "The output directory should be empty."
             )
             return
-        elif checks == "same":
+        elif dir_status == "same":
             QtWidgets.QMessageBox.information(
-                self,
-                "Same directory",
-                "Input and output directories cannot be the same."
+            self,
+            "Same directory",
+            "Input and output directories cannot be the same."
             )
             return
+        elif version_status == "mv":
+            QtWidgets.QMessageBox.information(
+            self,
+            "RPGMV",
+            "RPGMV detected, will start conversion"
+           )
+        elif version_status == "mz":
+            QtWidgets.QMessageBox.information(
+            self,
+            "RPGMZ",
+            "RPGMZ detected, will start conversion"
+           )           
+        
         self.worker = ConvertWorker(gamepath, gameoutput, version)
         self.worker.finished.connect(self.conversion_finished)
         self.worker.start()
@@ -308,7 +307,6 @@ class ConvertWorker(QtCore.QThread):
         self.gamepath = gamepath
         self.gameoutput = gameoutput
         self.version = version
-
     def run(self):
         get_nwjs(self.version, self.gameoutput)
         convert(self.gamepath, self.gameoutput)
