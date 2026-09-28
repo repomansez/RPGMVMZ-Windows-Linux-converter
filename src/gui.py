@@ -192,11 +192,11 @@ class MyWidget(QtWidgets.QWidget):
                 "Input and output directories cannot be the same.",
             )
             return
-        elif version_status == "mv":
+        elif version_status == "MV":
             QtWidgets.QMessageBox.information(
                 self, "RPGMV", "RPGMV detected, will start conversion"
             )
-        elif version_status == "mz":
+        elif version_status == "MZ":
             QtWidgets.QMessageBox.information(
                 self, "RPGMZ", "RPGMZ detected, will start conversion"
             )
@@ -222,7 +222,7 @@ class ConvertWorker(QtCore.QThread):
 
     def run(self):
         get_nwjs(self.version, self.gameoutput)
-        convert(self.gamepath, self.gameoutput)
+        convert(self.gamepath, self.gameoutput, self.version)
         self.finished.emit()
 
 

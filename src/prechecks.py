@@ -3,7 +3,8 @@ from os import listdir, path
 
 def check_rpgm_version(gamepath):
     package_file = path.join(gamepath, "package.json")
-    mv_file = path.join(gamepath, "www")
+    mv_file = path.join(gamepath, "www", "package.json")
+    print("MV FILE: ", mv_file)
     mz_dir = path.join(gamepath, "js")
     print(package_file, mv_file)
     if not path.isfile(package_file):
@@ -11,10 +12,10 @@ def check_rpgm_version(gamepath):
         return "not"
     if path.isfile(mv_file):
         print("RPG MV detectesd")
-        return "mv"
+        return "MV"
     elif path.isdir(mz_dir):
         print("RPG MZ detected.")
-        return "mz"
+        return "MZ"
 
 
 def check_dirs(gamepath, gameoutput):
