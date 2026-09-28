@@ -2,6 +2,7 @@ import sys
 from getnwjs import get_nwjs
 from convert import convert
 from PySide6 import QtCore, QtWidgets
+#from prechecks import check
 
 
 class MyWidget(QtWidgets.QWidget):
@@ -19,8 +20,10 @@ class MyWidget(QtWidgets.QWidget):
 
         # Main layout
         main_layout = QtWidgets.QVBoxLayout(self)
-        main_layout.setContentsMargins(40, 40, 40, 40)
+        main_layout.setContentsMargins(20, 20, 20, 20)
         main_layout.setSpacing(20)
+        nwjs_label = QtWidgets.QLabel("NW.js Version")
+        nwjs_label.setObjectName("section_label")
 
         # Title
         title = QtWidgets.QLabel("RPG Maker Converter")
@@ -34,6 +37,42 @@ class MyWidget(QtWidgets.QWidget):
         main_layout.addWidget(title)
         main_layout.addWidget(subtitle)
 
+        self.nwjs_version = QtWidgets.QComboBox()
+        view = QtWidgets.QListView()
+        view.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+        view.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        view.setUniformItemSizes(True)
+        self.nwjs_version.setView(view)
+        
+        self.nwjs_version.addItems([
+            # Older / RPG Maker compatibility
+            "0.29.4",
+            "0.44.5",
+            "0.48.4",
+            "0.59.1",
+            "0.67.1",
+            "0.69.1",
+            "0.78.0",
+        
+            # Modern
+            "0.93.0",
+            "0.94.0",
+            "0.110.1",
+            "0.111.3",
+            "0.112.0",
+            "0.113.0",
+            "0.114.2",
+            "0.115.0",
+            "0.116.0",
+            "0.117.0",
+        ])
+        
+        self.nwjs_version.setCurrentText("0.78.0")
+        self.nwjs_version.setMaxVisibleItems(8)
+        
+        
+        main_layout.addWidget(nwjs_label)
+        main_layout.addWidget(self.nwjs_version)
         # Directory section
         directory_label = QtWidgets.QLabel("Game Directory")
         directory_label.setObjectName("section_label")
@@ -195,20 +234,28 @@ class MyWidget(QtWidgets.QWidget):
 
     @QtCore.Slot()
     def convert(self):
-        if not self.selected_directory or not self.output_directory:
+        if not self.selected_directory:
             QtWidgets.QMessageBox.warning(
                 self,
                 "No Directory",
-                "Please select both directories first."
+                "Please select the game directory."
             )
+            return
+        elif not self.output_directory:
+            QtWidgets.QMessageBox.warning(
+                self,
+                "No Directory",
+                "Please select an output directory."
+            )            
             return
 
 
         # Your converter function goes here
         print("Converting:", self.selected_directory, self.output_directory)
-        version = "0.78.0"
+        version = self.nwjs_version.currentText()
         gamepath = self.selected_directory 
         gameoutput = self.output_directory
+        check()
         get_nwjs(version, gameoutput)
         convert(gamepath, gameoutput)
         QtWidgets.QMessageBox.information(
