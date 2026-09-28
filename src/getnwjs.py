@@ -21,9 +21,8 @@ def get_nwjs(version, gameoutput):
         )
 
         print("Downloading nwjs")
-        with urllib.request.urlopen(request) as response:
-            with open(nwjs_tarball, "wb") as file:
-                file.write(response.read())
+        with urllib.request.urlopen(request) as response, open(nwjs_tarball, "wb") as file:
+            file.write(response.read())
         print("Extracting nwjs")
         extract_nwjs(nwjs_tarball, gameoutput)
 
