@@ -1,4 +1,5 @@
 from os import listdir, path
+import json
 
 
 def check_rpgm_version(gamepath):
@@ -26,8 +27,23 @@ def check_dirs(gamepath, gameoutput):
     if output_empty != 0:
         return "notempty"
 
+def check_empty_json_name(gamepath):
+    json_file = path.join(gamepath, "package.json")
+    with open(json_file, "r+") as packagejson:
+        data = json.load(packagejson)
+        print(data)
+        if "name" not in data or data["name"] is None or data["name"] == "":
+            print("JSON DATA NAME: ", data["name"])
+            data["name"] = "whydodevsleavethisnullsmh"
+            packagejson.seek(0)
+            json.dump(data, packagejson, indent=4)
+            packagejson.truncate()
+        else:
+            print("DATA CONDITION FAILED!!!!!!")
+
 
 def check(gamepath, gameoutput):
     version_status = check_rpgm_version(gamepath)
+    check_empty_json_name(gamepath)
     dir_status = check_dirs(gamepath, gameoutput)
     return version_status, dir_status
